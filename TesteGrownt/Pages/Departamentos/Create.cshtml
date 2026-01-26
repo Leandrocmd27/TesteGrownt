@@ -1,0 +1,83 @@
+﻿@page
+@model TesteGrownt.Pages.Departamentos.CreateModel
+
+<h2 class="mb-4">Novo Departamento</h2>
+
+@if (!string.IsNullOrEmpty(TempData["Erro"]?.ToString()))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Erro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" class="row g-3">
+            <div class="col-md-12">
+                <label class="form-label">Nome</label>
+                <input asp-for="Departamento.Nome" class="form-control" placeholder="Ex: Executivo, Marketing, TI..." />
+                <span asp-validation-for="Departamento.Nome" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Gerente</label>
+                @if (!Model.Gerentes.Any())
+                {
+                    <div class="alert alert-warning mb-0">
+                        Nenhum colaborador cadastrado.
+                        <a asp-page="/Colaboradores/Create" class="alert-link">Cadastre um colaborador</a> primeiro.
+                    </div>
+                }
+                else
+                {
+                    <select asp-for="Departamento.GerenteId"
+                            asp-items="Model.Gerentes"
+                            class="form-select">
+                        <option value="">Selecione um gerente</option>
+                    </select>
+                    <span asp-validation-for="Departamento.GerenteId" class="text-danger"></span>
+                }
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Departamento Superior</label>
+                @if (!Model.DepartamentosSuperiores.Any())
+                {
+                    <div class="alert alert-info mb-0">
+                        Nenhum departamento disponível. Este será um departamento raiz.
+                    </div>
+                }
+                else
+                {
+                    <select asp-for="Departamento.DepartamentoSuperiorId"
+                            asp-items="Model.DepartamentosSuperiores"
+                            class="form-select">
+                        <option value="">Nenhum (Departamento Raiz)</option>
+                    </select>
+                }
+                <small class="form-text text-muted">Campo opcional - define a hierarquia</small>
+            </div>
+
+            <div class="col-12 d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-success">
+                    💾 Salvar
+                </button>
+                <a asp-page="Index" class="btn btn-secondary">
+                    ↩ Voltar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Sobrescreve mensagens de validação para PT-BR
+        $.validator.messages.required = "Este campo é obrigatório.";
+        $.validator.addMethod("required", function(value, element) {
+            return this.optional(element) || value.length > 0;
+        }, "Este campo é obrigatório.");
+    </script>
+}

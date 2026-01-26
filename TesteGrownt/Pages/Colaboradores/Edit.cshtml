@@ -1,0 +1,53 @@
+﻿@page "{id:guid}"
+@model TesteGrownt.Pages.Colaboradores.EditModel
+
+<h2 class="mb-4">Editar Colaborador</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" class="row g-3">
+            <input type="hidden" asp-for="Colaborador.Id" />
+
+            <div class="col-md-6">
+                <label class="form-label">Nome</label>
+                <input asp-for="Colaborador.Nome" class="form-control" />
+                <span asp-validation-for="Colaborador.Nome" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">CPF</label>
+                <input asp-for="Colaborador.CPF" class="form-control" />
+                <span asp-validation-for="Colaborador.CPF" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">RG</label>
+                <input asp-for="Colaborador.RG" class="form-control" />
+                <span asp-validation-for="Colaborador.RG" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Departamento</label>
+                <select asp-for="Colaborador.DepartamentoId"
+                        asp-items="Model.Departamentos"
+                        class="form-select">
+                    <option value="">Selecione</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary">
+                    💾 Salvar
+                </button>
+
+                <a asp-page="Index" class="btn btn-secondary">
+                    ❌ Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

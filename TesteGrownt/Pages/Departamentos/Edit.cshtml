@@ -1,0 +1,71 @@
+﻿@page
+@model TesteGrownt.Pages.Departamentos.EditModel
+
+<h2 class="mb-4">Editar Departamento</h2>
+
+@if (!string.IsNullOrEmpty(TempData["Erro"]?.ToString()))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Erro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" class="row g-3">
+            <input type="hidden" asp-for="Departamento.Id" />
+
+            <div class="col-md-12">
+                <label class="form-label">Nome</label>
+                <input asp-for="Departamento.Nome" class="form-control" placeholder="Ex: Executivo, Marketing, TI..." />
+                <span asp-validation-for="Departamento.Nome" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Gerente</label>
+                <select asp-for="Departamento.GerenteId"
+                        asp-items="Model.Gerentes"
+                        class="form-select">
+                    <option value="">Selecione um gerente</option>
+                </select>
+                <span asp-validation-for="Departamento.GerenteId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Departamento Superior</label>
+                @if (!Model.DepartamentosSuperiores.Any())
+                {
+                    <div class="alert alert-info mb-0">
+                        Nenhum outro departamento disponível. Este é um departamento raiz.
+                    </div>
+                }
+                else
+                {
+                    <select asp-for="Departamento.DepartamentoSuperiorId"
+                            asp-items="Model.DepartamentosSuperiores"
+                            class="form-select">
+                        <option value="">Nenhum (Departamento Raiz)</option>
+                    </select>
+                    <span asp-validation-for="Departamento.DepartamentoSuperiorId" class="text-danger"></span>
+                }
+                <small class="form-text text-muted">
+                    O departamento atual não aparece na lista para evitar ciclos na hierarquia
+                </small>
+            </div>
+
+            <div class="col-12 d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-success">
+                    💾 Salvar Alterações
+                </button>
+                <a asp-page="Index" class="btn btn-secondary">
+                    ↩ Voltar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

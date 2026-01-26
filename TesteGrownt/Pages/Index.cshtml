@@ -1,0 +1,41 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4 mb-4">Teste Grownt</h1>
+
+    <div class="mb-4">
+        <img src="https://grownt.tech/wp-content/uploads/2025/02/Logotipo-principal_Grownt_RGB-145px-largura-e1738618590968.png"
+             alt="Logo Grownt"
+             class="img-fluid"
+             style="max-width: 200px;" />
+    </div>
+
+    <p class="lead text-muted">
+        Sistema de Gestão de Colaboradores e Departamentos
+    </p>
+
+    <div class="row mt-5">
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">👥 Colaboradores</h5>
+                    <p class="card-text">Gerencie os colaboradores da empresa</p>
+                    <a asp-page="/Colaboradores/Index" class="btn btn-primary">Acessar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🏢 Departamentos</h5>
+                    <p class="card-text">Gerencie a estrutura departamental</p>
+                    <a asp-page="/Departamentos/Index" class="btn btn-primary">Acessar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
