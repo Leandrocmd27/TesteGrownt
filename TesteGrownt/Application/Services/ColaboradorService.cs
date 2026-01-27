@@ -94,5 +94,52 @@ namespace TesteGrownt.Application.Services
                 .ThenInclude(d => d.Gerente)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        // ColaboradorService.cs - ADICIONAR
+        public async Task<Colaborador> AtualizarAsync(Colaborador colaborador)
+        {
+            if (string.IsNullOrWhiteSpace(colaborador.Nome))
+                throw new InvalidOperationException("Nome é obrigatório.");
+
+            if (string.IsNullOrWhiteSpace(colaborador.CPF))
+                throw new InvalidOperationException("CPF é obrigatório.");
+
+            var existe = await _context.Colaboradores
+                .AnyAsync(c => c.Id == colaborador.Id);
+
+            if (!existe)
+                throw new InvalidOperationException("Colaborador não encontrado.");
+
+            // Valida CPF duplicado (exceto o próprio)
+            var cpfExiste = await _context.Colaboradores
+                .AnyAsync(x => x.CPF == colaborador.CPF && x.Id != colaborador.Id);
+
+            if (cpfExiste)
+                throw new InvalidOperationException("CPF já cadastrado.");
+
+            // Valida RG duplicado (se informado)
+            if (!string.IsNullOrWhiteSpace(colaborador.RG))
+            {
+                var rgExiste = await _context.Colaboradores
+                    .AnyAsync(x => x.RG == colaborador.RG && x.Id != colaborador.Id);
+
+                if (rgExiste)
+                    throw new InvalidOperationException("RG já cadastrado.");
+            }
+
+            // Valida departamento
+            if (colaborador.DepartamentoId != Guid.Empty)
+            {
+                var departamentoExiste = await _context.Departamentos
+                    .AnyAsync(d => d.Id == colaborador.DepartamentoId);
+
+                if (!departamentoExiste)
+                    throw new InvalidOperationException("Departamento não existe.");
+            }
+
+            _context.Entry(colaborador).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return colaborador;
+        }
     }
 }

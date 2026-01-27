@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TesteGrownt.Application.Interfaces;
+using TesteGrownt.Application.Services;
 using TesteGrownt.Domain.Entities;
 
 namespace TesteGrownt.Pages.Colaboradores
@@ -8,13 +10,16 @@ namespace TesteGrownt.Pages.Colaboradores
     public class IndexModel : PageModel
     {
         private readonly IColaboradorService _colaboradorService;
+        private readonly IDepartamentoService _departamentoService;
 
-        public IndexModel(IColaboradorService colaboradorService)
+        public IndexModel(IColaboradorService colaboradorService, IDepartamentoService departamentoService)
         {
             _colaboradorService = colaboradorService;
+            _departamentoService = departamentoService;
         }
 
         public IEnumerable<Colaborador> Colaboradores { get; set; } = new List<Colaborador>();
+        public SelectList Departamentos { get; set; } = null!;
 
         [BindProperty(SupportsGet = true)]
         public string? Nome { get; set; }
@@ -34,8 +39,11 @@ namespace TesteGrownt.Pages.Colaboradores
                 Nome,
                 CPF,
                 DepartamentoId,
-                RG
+            RG
             );
+
+            var departamentos = await _departamentoService.ListarAsync(null, null, null);
+            Departamentos = new SelectList(departamentos, "Id", "Nome");
         }
     }
 }

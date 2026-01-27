@@ -1,19 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using TesteGrownt.Infrastructure.Data;
-using TesteGrownt.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TesteGrownt.Application.Interfaces;
+using TesteGrownt.Domain.Entities;
 
 namespace TesteGrownt.Pages.Colaboradores
 {
     public class EditModel : PageModel
     {
-        private readonly AppDbContext _context;
+        private readonly IColaboradorService _colaboradorService;
+        private readonly IDepartamentoService _departamentoService;
 
-        public EditModel(AppDbContext context)
+        public EditModel(
+            IColaboradorService colaboradorService,
+            IDepartamentoService departamentoService)
         {
-            _context = context;
+            _colaboradorService = colaboradorService;
+            _departamentoService = departamentoService;
         }
 
         [BindProperty]
@@ -23,25 +26,43 @@ namespace TesteGrownt.Pages.Colaboradores
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Colaborador = await _context.Colaboradores
-                .Include(c => c.Departamento)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            Colaborador = await _colaboradorService.ObterComGerenteAsync(id);
 
             if (Colaborador == null)
                 return NotFound();
 
+            await CarregarDepartamentos(); // ?? ADICIONAR
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Remove validação de navegação
+            ModelState.Remove("Colaborador.Departamento");
+
             if (!ModelState.IsValid)
+            {
+                await CarregarDepartamentos(); // ?? ADICIONAR
                 return Page();
+            }
 
-            _context.Attach(Colaborador).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _colaboradorService.AtualizarAsync(Colaborador);
+                return RedirectToPage("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                await CarregarDepartamentos(); // ?? ADICIONAR
+                return Page();
+            }
+        }
 
-            return RedirectToPage("Index");
+        private async Task CarregarDepartamentos()
+        {
+            var departamentos = await _departamentoService.ListarAsync(null, null, null);
+            Departamentos = new SelectList(departamentos, "Id", "Nome");
         }
     }
 }

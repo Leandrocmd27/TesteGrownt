@@ -1,51 +1,105 @@
 ﻿@page
 @model TesteGrownt.Pages.Departamentos.IndexModel
 
-<h2>Departamentos</h2>
+<h2 class="mb-4">Departamentos</h2>
 
-<a asp-page="Create" class="btn btn-primary mb-3">
-    Novo Departamento
+<a asp-page="Create" class="btn btn-success mb-3">
+    ➕ Novo Departamento
 </a>
 
-<form method="get" class="row g-3 mb-4">
-    <div class="col-md-4">
-        <input type="text"
-               name="nome"
-               value="@Model.Nome"
-               class="form-control"
-               placeholder="Nome do departamento" />
-    </div>
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <!-- 1️⃣ FILTRO: NOME -->
+            <div class="col-md-4">
+                <label class="form-label">Nome do Departamento</label>
+                <input type="text"
+                       asp-for="Nome"
+                       class="form-control"
+                       placeholder="Digite o nome..." />
+            </div>
 
-    <div class="col-md-3">
-        <button class="btn btn-secondary">Filtrar</button>
-        <a asp-page="Index" class="btn btn-link">Limpar</a>
-    </div>
-</form>
+            <!-- 2️⃣ FILTRO: GERENTE -->
+            <div class="col-md-4">
+                <label class="form-label">Gerente</label>
+                <select asp-for="GerenteId"
+                        asp-items="Model.Gerentes"
+                        class="form-select">
+                    <option value="">Todos os gerentes</option>
+                </select>
+            </div>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Departamento Superior</th>
-            <th>Gerente</th>
-            <th style="width: 140px;"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var dep in Model.Departamentos)
-        {
-            <tr>
-                <td>@dep.Nome</td>
-                <td>@dep.DepartamentoSuperior?.Nome</td>
-                <td>@dep.Gerente?.Nome</td>
-                <td>
-                    <a asp-page="Edit"
-                       asp-route-id="@dep.Id"
-                       class="btn btn-sm btn-warning">
-                        Editar
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            <!-- 3️⃣ FILTRO: DEPARTAMENTO SUPERIOR -->
+            <div class="col-md-4">
+                <label class="form-label">Departamento Superior</label>
+                <select asp-for="DepartamentoSuperiorId"
+                        asp-items="Model.DepartamentosSuperiores"
+                        class="form-select">
+                    <option value="">Todos os departamentos</option>
+                </select>
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    🔍 Filtrar
+                </button>
+                <a asp-page="Index" class="btn btn-secondary">
+                    🗑️ Limpar Filtros
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-striped table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>Gerente</th>
+                    <th>Departamento Superior</th>
+                    <th style="width: 120px">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Departamentos.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            Nenhum departamento encontrado
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var dep in Model.Departamentos)
+                    {
+                        <tr>
+                            <td>@dep.Nome</td>
+                            <td>@dep.Gerente?.Nome</td>
+                            <td>
+                                @if (dep.DepartamentoSuperior != null)
+                                {
+                                    @dep.DepartamentoSuperior.Nome
+                                }
+                                else
+                                {
+                                    <span class="text-muted fst-italic">Departamento Raiz</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-page="Edit"
+                                   asp-route-id="@dep.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    ✏️ Editar
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

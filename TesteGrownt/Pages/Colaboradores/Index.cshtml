@@ -21,6 +21,15 @@
                 <input asp-for="RG" class="form-control" placeholder="RG" />
             </div>
 
+            <div class="col-md-3">
+                <label class="form-label">Departamento</label>
+                <select asp-for="DepartamentoId"
+                        asp-items="Model.Departamentos"
+                        class="form-select">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+
             <div class="col-md-4 d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
                     🔍 Filtrar

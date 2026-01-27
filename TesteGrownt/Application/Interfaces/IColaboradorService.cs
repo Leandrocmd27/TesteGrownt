@@ -12,5 +12,7 @@ namespace TesteGrownt.Application.Interfaces
             string? rg);
 
         Task<Colaborador?> ObterComGerenteAsync(Guid id);
+
+        Task<Colaborador> AtualizarAsync(Colaborador colaborador);
     }
 }
