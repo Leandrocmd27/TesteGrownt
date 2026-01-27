@@ -3,6 +3,11 @@
 
 <h2 class="mb-4">Editar Colaborador</h2>
 
+<div asp-validation-summary="ModelOnly"
+     class="alert alert-danger alert-dismissible fade show"
+     role="alert">
+</div>
+
 <div class="card">
     <div class="card-body">
         <form method="post" class="row g-3">
@@ -16,13 +21,13 @@
 
             <div class="col-md-3">
                 <label class="form-label">CPF</label>
-                <input asp-for="Colaborador.CPF" class="form-control" />
+                <input asp-for="Colaborador.CPF" class="form-control cpf" />
                 <span asp-validation-for="Colaborador.CPF" class="text-danger"></span>
             </div>
 
             <div class="col-md-3">
                 <label class="form-label">RG</label>
-                <input asp-for="Colaborador.RG" class="form-control" />
+                <input asp-for="Colaborador.RG" class="form-control rg" />
                 <span asp-validation-for="Colaborador.RG" class="text-danger"></span>
             </div>
 

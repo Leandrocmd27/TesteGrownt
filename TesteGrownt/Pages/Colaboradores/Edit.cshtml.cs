@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.RegularExpressions;
 using TesteGrownt.Application.Interfaces;
 using TesteGrownt.Domain.Entities;
 
@@ -31,7 +32,7 @@ namespace TesteGrownt.Pages.Colaboradores
             if (Colaborador == null)
                 return NotFound();
 
-            await CarregarDepartamentos(); // ?? ADICIONAR
+            await CarregarDepartamentos(); 
             return Page();
         }
 
@@ -41,20 +42,23 @@ namespace TesteGrownt.Pages.Colaboradores
             ModelState.Remove("Colaborador.Departamento");
 
             if (!ModelState.IsValid)
-            {
-                await CarregarDepartamentos(); // ?? ADICIONAR
+            {            
+                await CarregarDepartamentos(); 
                 return Page();
             }
 
             try
             {
+                Colaborador.CPF = Regex.Replace(Colaborador.CPF, @"\D", "");
+                Colaborador.RG = Regex.Replace(Colaborador.RG, @"\D", "");
+
                 await _colaboradorService.AtualizarAsync(Colaborador);
                 return RedirectToPage("Index");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                await CarregarDepartamentos(); // ?? ADICIONAR
+                await CarregarDepartamentos(); 
                 return Page();
             }
         }

@@ -37,7 +37,7 @@ namespace TesteGrownt.Application.Services
                     throw new InvalidOperationException("RG já cadastrado.");
             }
 
-            // 🔥 REGRA DO DEPARTAMENTO
+            //REGRA DO DEPARTAMENTO
             var existeDepartamento = await _context.Departamentos.AnyAsync();
 
             if (existeDepartamento)
@@ -86,7 +86,7 @@ namespace TesteGrownt.Application.Services
             return await query.ToListAsync();
         }
 
-        // 🔥 DESAFIO: Buscar colaborador com nome do gerente
+        // Buscar colaborador com nome do gerente
         public async Task<Colaborador?> ObterComGerenteAsync(Guid id)
         {
             return await _context.Colaboradores
@@ -95,7 +95,7 @@ namespace TesteGrownt.Application.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        // ColaboradorService.cs - ADICIONAR
+        
         public async Task<Colaborador> AtualizarAsync(Colaborador colaborador)
         {
             if (string.IsNullOrWhiteSpace(colaborador.Nome))
@@ -130,11 +130,21 @@ namespace TesteGrownt.Application.Services
             // Valida departamento
             if (colaborador.DepartamentoId != Guid.Empty)
             {
-                var departamentoExiste = await _context.Departamentos
-                    .AnyAsync(d => d.Id == colaborador.DepartamentoId);
+                
+                var existeDepartamento = await _context.Departamentos.AnyAsync();
 
-                if (!departamentoExiste)
-                    throw new InvalidOperationException("Departamento não existe.");
+                if (existeDepartamento)
+                {
+                    if (colaborador.DepartamentoId == Guid.Empty)
+                        throw new InvalidOperationException(
+                            "Departamento é obrigatório pois existem departamentos cadastrados.");
+
+                    var departamentoExiste = await _context.Departamentos
+                        .AnyAsync(d => d.Id == colaborador.DepartamentoId);
+
+                    if (!departamentoExiste)
+                        throw new InvalidOperationException("Departamento não existe.");
+                }
             }
 
             _context.Entry(colaborador).State = EntityState.Modified;

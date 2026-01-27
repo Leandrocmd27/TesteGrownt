@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.RegularExpressions;
 using TesteGrownt.Application.Interfaces;
 using TesteGrownt.Domain.Entities;
 
@@ -24,23 +25,26 @@ namespace TesteGrownt.Pages.Colaboradores
 
         public SelectList Departamentos { get; set; } = null!;
 
-        // ?? 1) ONGET ? carrega combo ao abrir a tela
+        // carrega combo ao abrir a tela
         public async Task OnGetAsync()
         {
             await CarregarDepartamentos();
         }
 
-        // ?? 2) ONPOST ? carrega combo se der erro
+        // carrega combo se der erro
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                await CarregarDepartamentos(); // ?? AQUI
+                await CarregarDepartamentos(); 
                 return Page();
             }
 
             try
             {
+                Colaborador.CPF = Regex.Replace(Colaborador.CPF, @"\D", "");
+                Colaborador.RG = Regex.Replace(Colaborador.RG, @"\D", "");
+
                 await _colaboradorService.CriarAsync(Colaborador);
                 return RedirectToPage("Index");
             }
@@ -48,12 +52,12 @@ namespace TesteGrownt.Pages.Colaboradores
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
 
-                await CarregarDepartamentos(); // ?? E AQUI
+                await CarregarDepartamentos(); 
                 return Page();
             }
         }
 
-        // ?? MÉTODO REUTILIZÁVEL
+        // MÉTODO REUTILIZÁVEL
         private async Task CarregarDepartamentos()
         {
             var departamentos = await _departamentoService.ListarAsync(

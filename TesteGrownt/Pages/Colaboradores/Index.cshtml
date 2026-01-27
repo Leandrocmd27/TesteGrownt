@@ -13,12 +13,12 @@
 
             <div class="col-md-3">
                 <label class="form-label">CPF</label>
-                <input asp-for="CPF" class="form-control" placeholder="CPF" />
+                <input asp-for="CPF" class="form-control cpf" />
             </div>
 
             <div class="col-md-2">
                 <label class="form-label">RG</label>
-                <input asp-for="RG" class="form-control" placeholder="RG" />
+                <input asp-for="RG" class="form-control rg" />
             </div>
 
             <div class="col-md-3">
@@ -71,8 +71,8 @@
                     {
                         <tr>
                             <td>@item.Nome</td>
-                            <td>@item.CPF</td>
-                            <td>@item.RG</td>
+                            <td>@item.CPFFormatado</td>
+                            <td>@item.RGFormatado</td>
                             <td>@item.Departamento?.Nome</td>
                             <td>@item.Departamento?.Gerente?.Nome</td>
                             <td>

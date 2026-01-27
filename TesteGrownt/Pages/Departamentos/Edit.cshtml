@@ -3,6 +3,11 @@
 
 <h2 class="mb-4">Editar Departamento</h2>
 
+<div asp-validation-summary="ModelOnly"
+     class="alert alert-danger alert-dismissible fade show"
+     role="alert">
+</div>
+
 @if (!string.IsNullOrEmpty(TempData["Erro"]?.ToString()))
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">

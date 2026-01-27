@@ -22,11 +22,11 @@ namespace TesteGrownt.Pages.Departamentos
         public IEnumerable<Departamento> Departamentos { get; set; }
             = Enumerable.Empty<Departamento>();
 
-        // ?? LISTAS PARA OS FILTROS
+        // LISTAS PARA OS FILTROS
         public SelectList Gerentes { get; set; } = null!;
         public SelectList DepartamentosSuperiores { get; set; } = null!;
 
-        // ?? PROPRIEDADES DOS FILTROS (com SupportsGet)
+        // PROPRIEDADES DOS FILTROS (com SupportsGet)
         [BindProperty(SupportsGet = true)]
         public string? Nome { get; set; }
 
