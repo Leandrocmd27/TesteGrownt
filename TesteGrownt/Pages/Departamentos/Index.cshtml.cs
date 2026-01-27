@@ -38,13 +38,13 @@ namespace TesteGrownt.Pages.Departamentos
 
         public async Task OnGetAsync()
         {
-            // 1?? Busca departamentos com os filtros aplicados
+            //  Busca departamentos com os filtros aplicados
             Departamentos = await _departamentoService.ListarAsync(
                 Nome,
                 GerenteId,
                 DepartamentoSuperiorId);
 
-            // 2?? Carrega listas para os dropdowns de filtro
+            // Carrega listas para os dropdowns de filtro
             await CarregarFiltrosAsync();
         }
 
