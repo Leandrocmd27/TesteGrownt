@@ -16,14 +16,18 @@ namespace TesteGrownt.Application.Services
 
         public async Task<Colaborador> CriarAsync(Colaborador colaborador)
         {
-            // CPF único
+            if (string.IsNullOrWhiteSpace(colaborador.Nome))
+                throw new InvalidOperationException("Nome é obrigatório.");
+
+            if (string.IsNullOrWhiteSpace(colaborador.CPF))
+                throw new InvalidOperationException("CPF é obrigatório.");
+
             var cpfExiste = await _context.Colaboradores
                 .AnyAsync(x => x.CPF == colaborador.CPF);
 
             if (cpfExiste)
                 throw new InvalidOperationException("CPF já cadastrado.");
 
-            // RG único (se informado)
             if (!string.IsNullOrWhiteSpace(colaborador.RG))
             {
                 var rgExiste = await _context.Colaboradores
@@ -33,11 +37,28 @@ namespace TesteGrownt.Application.Services
                     throw new InvalidOperationException("RG já cadastrado.");
             }
 
+            // 🔥 REGRA DO DEPARTAMENTO
+            var existeDepartamento = await _context.Departamentos.AnyAsync();
+
+            if (existeDepartamento)
+            {
+                if (colaborador.DepartamentoId == Guid.Empty)
+                    throw new InvalidOperationException(
+                        "Departamento é obrigatório pois existem departamentos cadastrados.");
+
+                var departamentoExiste = await _context.Departamentos
+                    .AnyAsync(d => d.Id == colaborador.DepartamentoId);
+
+                if (!departamentoExiste)
+                    throw new InvalidOperationException("Departamento não existe ou não informado .");
+            }
+
             _context.Colaboradores.Add(colaborador);
             await _context.SaveChangesAsync();
 
             return colaborador;
         }
+
 
         public async Task<IEnumerable<Colaborador>> ListarAsync(
             string? nome,
