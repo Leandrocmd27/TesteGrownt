@@ -16,6 +16,10 @@ namespace TesteGrownt.Application.Services
 
         public async Task<Departamento> CriarAsync(Departamento departamento)
         {
+            // Valida nome do departamento
+            if (string.IsNullOrWhiteSpace(departamento.Nome))
+                throw new InvalidOperationException("O nome do departamento é obrigatório.");
+
             // Valida se o gerente existe
             var gerenteExiste = await _context.Colaboradores
                 .AnyAsync(c => c.Id == departamento.GerenteId);

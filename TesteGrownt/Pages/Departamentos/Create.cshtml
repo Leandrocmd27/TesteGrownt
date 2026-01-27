@@ -78,11 +78,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Sobrescreve mensagens de validação para PT-BR
-        $.validator.messages.required = "Este campo é obrigatório.";
-        $.validator.addMethod("required", function(value, element) {
-            return this.optional(element) || value.length > 0;
-        }, "Este campo é obrigatório.");
-    </script>
 }
