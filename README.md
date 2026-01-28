@@ -37,8 +37,11 @@ TesteGrownt/
 │       ├── ColaboradorService.cs
 │       └── DepartamentoService.cs
 ├── TesteGrownt.Infrastructure/  # Acesso a dados e persistência
-│   └── Data/
-│       └── AppDbContext.cs
+│   ├── Data/
+│   │   └── AppDbContext.cs
+│		└── Mappings/
+│       └── ColaboradorMappings.cs
+│		    └── CDepartamentoMappings.cs
 └── TesteGrownt/                 # Camada de apresentação (Razor Pages)
     └── Pages/
         ├── Colaboradores/
@@ -158,6 +161,9 @@ Verifique o arquivo `appsettings.json`:
 ### 3️⃣ Iniciar o Banco de Dados
 
 ```bash
+
+Navegue até a pasta raiz do projeto (onde está o arquivo docker-compose.yml) e execute:
+
 # Iniciar o container
 docker-compose up -d
 
@@ -166,17 +172,44 @@ docker ps
 
 # Ver logs (se necessário)
 docker-compose logs -f postgres
+
+Nota: O comando deve ser executado no diretório que contém o arquivo docker-compose.yml.
 ```
 
 ### 4️⃣ Aplicar Migrations
 
 ```bash
-# Adicionar migration inicial (se necessário)
+
+dotnet ef database update --project TesteGrownt
+
+# Adicionar migration inicial (apenas se necessário)
 dotnet ef migrations add InitialCreate --project TesteGrownt.Infrastructure --startup-project TesteGrownt
+
+```
+
+**Estrutura de diretórios esperada:**
+```
+C:\Users\SeuUsuario\Desktop\TesteGrownt\     ← Execute os comandos aqui
+├── docker-compose.yml                        ← Para docker-compose up -d
+├── TesteGrownt.sln                          ← Para dotnet ef commands
+└── TesteGrownt\
+    ├── TesteGrownt.csproj
+    ├── Program.cs
+    └── appsettings.json
+	
+
 
 # Atualizar o banco de dados
 dotnet ef database update --project TesteGrownt.Infrastructure --startup-project TesteGrownt
+
+Importante:
+
+O comando docker-compose up -d deve ser executado na pasta que contém docker-compose.yml
+O comando dotnet ef database update deve ser executado na pasta que contém o arquivo .sln
+Alguns avisos informativos podem aparecer durante a execução das migrations (como "Acquiring an exclusive lock"), mas isso é normal
+
 ```
+
 
 ### 5️⃣ Executar a Aplicação
 
