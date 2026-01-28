@@ -142,7 +142,7 @@ volumes:
 ### 1️⃣ Clone o Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/TesteGrownt.git
+git clone https://github.com/Leandrocmd27/TesteGrownt
 cd TesteGrownt
 ```
 
