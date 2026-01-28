@@ -41,7 +41,7 @@ TesteGrownt/
 │   │   └── AppDbContext.cs
 │		└── Mappings/
 │       └── ColaboradorMappings.cs
-│		    └── CDepartamentoMappings.cs
+│		└── CDepartamentoMappings.cs
 └── TesteGrownt/                 # Camada de apresentação (Razor Pages)
     └── Pages/
         ├── Colaboradores/
