@@ -50,7 +50,10 @@ namespace TesteGrownt.Pages.Colaboradores
             try
             {
                 Colaborador.CPF = Regex.Replace(Colaborador.CPF, @"\D", "");
-                Colaborador.RG = Regex.Replace(Colaborador.RG, @"\D", "");
+                if (!string.IsNullOrWhiteSpace(Colaborador.RG))
+                    Colaborador.RG = Regex.Replace(Colaborador.RG, @"\D", "");
+                else
+                    Colaborador.RG = null;
 
                 await _colaboradorService.AtualizarAsync(Colaborador);
                 return RedirectToPage("Index");

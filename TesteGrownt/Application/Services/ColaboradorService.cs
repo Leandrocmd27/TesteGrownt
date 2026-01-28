@@ -16,6 +16,11 @@ namespace TesteGrownt.Application.Services
 
         public async Task<Colaborador> CriarAsync(Colaborador colaborador)
         {
+
+            if (!CpfValido(colaborador.CPF))
+                throw new InvalidOperationException("CPF inválido.");           
+
+
             if (string.IsNullOrWhiteSpace(colaborador.Nome))
                 throw new InvalidOperationException("Nome é obrigatório.");
 
@@ -30,6 +35,9 @@ namespace TesteGrownt.Application.Services
 
             if (!string.IsNullOrWhiteSpace(colaborador.RG))
             {
+                if (!RgValido(colaborador.RG))
+                    throw new InvalidOperationException("RG inválido.");
+
                 var rgExiste = await _context.Colaboradores
                     .AnyAsync(x => x.RG == colaborador.RG);
 
@@ -75,16 +83,31 @@ namespace TesteGrownt.Application.Services
                 query = query.Where(x => x.Nome.Contains(nome));
 
             if (!string.IsNullOrWhiteSpace(cpf))
-                query = query.Where(x => x.CPF == cpf);
+            {
+                var cpfLimpo = LimparNumero(cpf);
+                query = query.Where(x => x.CPF == cpfLimpo);
+            }
 
             if (!string.IsNullOrWhiteSpace(rg))
-                query = query.Where(x => x.RG == rg);
+            {
+                var rgLimpo = LimparNumero(rg);
+                query = query.Where(x => x.RG == rgLimpo);
+            }
 
             if (departamentoId.HasValue)
                 query = query.Where(x => x.DepartamentoId == departamentoId);
 
             return await query.ToListAsync();
         }
+
+        private static string LimparNumero(string? valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+                return string.Empty;
+
+            return new string(valor.Where(char.IsDigit).ToArray());
+        }
+
 
         // Buscar colaborador com nome do gerente
         public async Task<Colaborador?> ObterComGerenteAsync(Guid id)
@@ -98,6 +121,9 @@ namespace TesteGrownt.Application.Services
         
         public async Task<Colaborador> AtualizarAsync(Colaborador colaborador)
         {
+            if (!CpfValido(colaborador.CPF))
+                throw new InvalidOperationException("CPF inválido.");
+
             if (string.IsNullOrWhiteSpace(colaborador.Nome))
                 throw new InvalidOperationException("Nome é obrigatório.");
 
@@ -120,6 +146,9 @@ namespace TesteGrownt.Application.Services
             // Valida RG duplicado (se informado)
             if (!string.IsNullOrWhiteSpace(colaborador.RG))
             {
+                if (!RgValido(colaborador.RG))
+                    throw new InvalidOperationException("RG inválido.");
+
                 var rgExiste = await _context.Colaboradores
                     .AnyAsync(x => x.RG == colaborador.RG && x.Id != colaborador.Id);
 
@@ -151,5 +180,72 @@ namespace TesteGrownt.Application.Services
             await _context.SaveChangesAsync();
             return colaborador;
         }
+
+        public static bool CpfValido(string cpf)
+        {
+            if (string.IsNullOrWhiteSpace(cpf))
+                return false;
+
+            cpf = new string(cpf.Where(char.IsDigit).ToArray());
+
+            if (cpf.Length != 11)
+                return false;
+
+            // Bloqueia CPFs com todos os números iguais
+            if (cpf.Distinct().Count() == 1)
+                return false;
+
+            int[] multiplicador1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+
+            string tempCpf = cpf.Substring(0, 9);
+            int soma = 0;
+
+            for (int i = 0; i < 9; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
+
+            int resto = soma % 11;
+            resto = resto < 2 ? 0 : 11 - resto;
+
+            string digito = resto.ToString();
+            tempCpf += digito;
+            soma = 0;
+
+            for (int i = 0; i < 10; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
+
+            resto = soma % 11;
+            resto = resto < 2 ? 0 : 11 - resto;
+
+            digito += resto.ToString();
+
+            return cpf.EndsWith(digito);
+        }
+
+        public static bool RgValido(string rg)
+        {
+            if (string.IsNullOrWhiteSpace(rg))
+                return true; // RG é opcional
+
+            rg = rg.Replace(".", "").Replace("-", "").ToUpper();
+
+            if (rg.Length < 7 || rg.Length > 9)
+                return false;
+
+            // Bloqueia RG com todos os caracteres iguais
+            if (rg.Distinct().Count() == 1)
+                return false;
+
+            // Aceita números e X no final
+            for (int i = 0; i < rg.Length; i++)
+            {
+                if (!char.IsDigit(rg[i]) && !(rg[i] == 'X' && i == rg.Length - 1))
+                    return false;
+            }
+
+            return true;
+        }
+
+
     }
 }

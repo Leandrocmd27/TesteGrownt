@@ -42,10 +42,18 @@ namespace TesteGrownt.Domain.Entities
                 if (string.IsNullOrWhiteSpace(RG))
                     return "";
 
-                var somenteNumeros = Regex.Replace(RG, @"\D", "");
+                var rgLimpo = RG.Replace(".", "").Replace("-", "").ToUpper();
 
-                return Convert.ToUInt64(somenteNumeros).ToString(@"00\.000\.000\-0");
+                // Se terminar com X, não tenta formatar numericamente
+                if (rgLimpo.EndsWith("X"))
+                    return RG;
+
+                if (!ulong.TryParse(rgLimpo, out var rgNumero))
+                    return RG;
+
+                return rgNumero.ToString(@"00\.000\.000\-0");
             }
         }
+
     }
 }
