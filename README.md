@@ -133,18 +133,6 @@ volumes:
   postgres_data:
 ```
 
-### Iniciar o Banco de Dados
-
-```bash
-# Iniciar o container
-docker-compose up -d
-
-# Verificar se está rodando
-docker ps
-
-# Ver logs (se necessário)
-docker-compose logs -f postgres
-```
 
 ## 🚀 Como Executar o Projeto
 
@@ -170,7 +158,14 @@ Verifique o arquivo `appsettings.json`:
 ### 3️⃣ Iniciar o Banco de Dados
 
 ```bash
+# Iniciar o container
 docker-compose up -d
+
+# Verificar se está rodando
+docker ps
+
+# Ver logs (se necessário)
+docker-compose logs -f postgres
 ```
 
 ### 4️⃣ Aplicar Migrations
